@@ -1,4 +1,4 @@
-// Selecting Elements
+// Seleccionando elementos
 const canvas = document.querySelector("canvas");
 const ctx = canvas.getContext("2d");
 const panel = document.querySelector(".panel");
@@ -12,7 +12,7 @@ comScore.src = "resources/audio/comScore.mp3";
 const userScore = new Audio();
 userScore.src = "resources/audio/userScore.mp3";
 
-// User choosing the mode.
+// Elección del modo por parte del usuario.
 modeValues.forEach((modeValue) => {
     modeValue.addEventListener("click", () => {
         modeValues.forEach((index) => {
@@ -23,7 +23,7 @@ modeValues.forEach((modeValue) => {
         mode.value = value;
     });
 });
-let compSpeed; // The computer speed which selects the dataset of mode.
+let velodidadInicial; // La velocidad de la computadora que selecciona el conjunto de datos del modo.
 
 canvas.width = 600;
 canvas.height = 400;
@@ -52,7 +52,7 @@ let ball = {
         x: 7,
         y: 7,
     },
-    speed: 7,
+    speed: 6,
     color: "white",
     x: canvas.width / 2,
     y: canvas.height / 2,
@@ -66,7 +66,7 @@ let net = {
     height: 10,
 };
 
-// Function for drawing rectangle, circle, text, net.
+// Función para dibujar rectángulos, círculos, texto y la red.
 function drawRect(x, y, w, h, c) {
     ctx.beginPath();
     ctx.fillStyle = c;
@@ -94,7 +94,7 @@ function drawNet() {
     }
 }
 
-// Method template for particle.
+// Plantilla de método para partículas.
 class Particle {
     constructor(x, y, color, radius, velocity) {
         this.x = x;
@@ -118,7 +118,7 @@ class Particle {
     }
 }
 
-// User Paddle movement.
+// Movimiento de la paleta del usuario.
 canvas.addEventListener("mousemove", (e) => {
     let rect = canvas.getBoundingClientRect().top;
     user.y = e.clientY - rect - user.height / 2;
@@ -134,7 +134,7 @@ canvas.addEventListener("touchstart", (e) => {
     user.y = e.changedTouches[0].clientY - rect - user.height / 2;
 });
 
-// Collision detection.
+// Detección de colisiones.
 function collision(b, p) {
     p.top = p.y;
     p.bottom = p.y + p.height;
@@ -154,7 +154,7 @@ function collision(b, p) {
     );
 }
 
-// Resetting the ball
+// Restablecer la pelota
 function resetBall() {
     ball.x = canvas.width / 2;
     ball.y = canvas.height / 2;
@@ -172,12 +172,12 @@ function resetBall() {
     }, 1500);
 }
 
-// GameOver Function.
+// Función de fin de juego.
 function gameOver() {
     let stat;
     let maxScore = 10;
 
-    // These codes match with both players.
+    // Estos códigos coinciden con ambos jugadores.
     function commonCodes() {
         ball.x = canvas.width / 2;
         ball.y = canvas.height / 2;
@@ -186,16 +186,16 @@ function gameOver() {
         panel.classList.add("reveal");
     }
     if (user.score >= maxScore) {
-        stat = "You Won!";
+        stat = "¡Ganaste!";
         commonCodes();
     } else if (computer.score >= maxScore) {
-        stat = "You Lost!";
+        stat = "¡Perdiste!";
         commonCodes();
     }
-    statPanel.textContent = stat; // Stat comes to stat panel.
+    statPanel.textContent = stat; // La estadística se muestra en el panel de estadísticas.
 }
 
-// Draw Function for drawing the board.
+// Función para dibujar los elementos en el tablero.
 function draw() {
     drawRect(0, 0, canvas.width, canvas.height, "#089c29");
     drawRect(user.x, user.y, user.width, user.height, user.color);
@@ -212,15 +212,15 @@ function draw() {
     drawText(computer.score, (3 * canvas.width) / 4, canvas.height / 5);
 }
 
-let gameId; // The id which will terminate and initiate the game.
-let timeout; // The variable for the interval of the ball.
+let gameId; // El identificador que terminará y comenzará el juego.
+let timeout; // La variable para el intervalo de la pelota.
 let particles = [];
 function game() {
     gameId = requestAnimationFrame(game);
     draw();
     gameOver();
 
-    // Collision detection for top and bottom wall.
+    // Detección de colisiones con las paredes superior e inferior.
     if (
         ball.y + ball.radius + ball.velocity.y > canvas.height ||
         ball.y - ball.radius < 0
@@ -228,52 +228,52 @@ function game() {
         ball.velocity.y = -ball.velocity.y;
     }
 
-    // Collision detection for left and right wall.
+    // Detección de colisiones con las paredes izquierda y derecha.
     if (ball.x + ball.radius + ball.velocity.x > canvas.width) {
-        // If ball touches right wall, user gets a point.
+        // Si la pelota toca la pared derecha, el usuario obtiene un punto.
         resetBall();
         userScore.play();
         console.log(userScore);
         user.score += 1;
     } else if (ball.x - ball.radius < 0) {
-        // Else if the ball touches left wall, computer gets a point.
+        // En caso de que la pelota toque la pared izquierda, la computadora obtiene un punto.
         resetBall();
         comScore.play();
         console.log(comScore);
         computer.score += 1;
     }
 
-    // Increasing the ball's position.
-    ball.x += ball.velocity.x;
-    ball.y += ball.velocity.y;
+    // Aumento de la posición de la pelota.
+    ball.x += ball.velocity.x / 2;
+    ball.y += ball.velocity.y / 2;
 
-    // AI.
-    computer.y += (ball.y - (computer.y + computer.height / 2)) * compSpeed;
+    // IA.
+    computer.y += (ball.y - (computer.y + computer.height / 2)) * velodidadInicial;
 
-    // Which player will hit now.
+    // Qué jugador golpeará ahora.
     let player = ball.x + ball.radius < canvas.width / 2 ? user : computer;
 
-    // If collision occurs,
+    // Si se produce una colisión,
     if (collision(ball, player)) {
-        // First get the point in which the paddle hit the ball
+        // Primero, obtén el punto en el que la paleta golpeó la pelota.
         let collidePoint = ball.y - (player.y + player.height / 2);
 
-        // Then Convert it into a number that will be 1 to -1.
+        // Luego conviértelo en un número que esté entre 1 y -1.
         collidePoint = collidePoint / (player.height / 2);
 
-        // Then multiply it with 45 degree so that we can get a perfect angle between
-        // 45 and -45.
+        // Luego multiplícalo por 45 grados para obtener un ángulo perfecto entre
+        // 45 y -45 grados.
         let angle = (Math.PI / 4) * collidePoint;
         let direction = ball.x + ball.radius < canvas.width / 2 ? 1 : -1;
         ball.velocity.x = direction * Math.cos(angle) * ball.speed;
         ball.velocity.y = Math.sin(angle) * ball.speed;
 
-        // Add .5 to the ball's speed to make the game fast.
+        // Agrega 0.5 a la velocidad de la pelota para hacer el juego más rápido.
         ball.speed += 0.5;
 
-        // Particles explosion
-        if (player == user) {
-            // Directing the position of explosion. In this case, user
+        // Explosión de partículas
+        if (player === user) {
+            // Dirección de la explosión. En este caso, el usuario.
             for (let i = 0; i < ball.radius; i++) {
                 let x = player.x + player.width;
                 let y = ball.y + ball.radius;
@@ -290,8 +290,8 @@ function game() {
                     )
                 );
             }
-        } else if (player == computer) {
-            // Directing the position of explosion. In this case, computer
+        } else if (player === computer) {
+            // Dirección de la explosión. En este caso, la computadora.
             for (let i = 0; i < ball.radius; i++) {
                 let x = player.x - player.width;
                 let y = ball.y + ball.radius;
@@ -312,7 +312,7 @@ function game() {
     }
 
     particles.forEach((particle) => {
-        // If radius is less than 0, it vanishes. If not, it updates.
+        // Si el radio es menor o igual a 0, desaparece. Si no, se actualiza.
         if (particle.radius <= 0) {
             particles.splice(particle, 1);
         } else {
@@ -321,47 +321,47 @@ function game() {
     });
 }
 
-// When player hits the play button,
+// Cuando el jugador presiona el botón "Jugar",
 play.addEventListener("click", () => {
-    cancelAnimationFrame(gameId); // Previous game resets.
-    user.score = 0; // Score resets.
-    computer.score = 0; // Score resets.
-    panel.classList.remove("reveal"); // Panel reveals to give a message.
-    resetBall(); // Ball resets.
-    clearTimeout(timeout); // The ball's timeout cancels.
-    ball.speed = 7; // Ball's speed becomes normal.
+    cancelAnimationFrame(gameId); // Restablece el juego anterior.
+    user.score = 0; // Restablece el puntaje.
+    computer.score = 0; // Restablece el puntaje.
+    panel.classList.remove("reveal"); // El panel se muestra para dar un mensaje.
+    resetBall(); // Restablece la pelota.
+    clearTimeout(timeout); // Se cancela el tiempo de espera de la pelota.
+    ball.speed = 7; // La velocidad de la pelota vuelve a ser normal.
     ball.velocity = {
         x: 7,
         y: 7,
     };
     if (mode.value == "") {
-        // If user selects no mode, alert comes. and the function stops there.
-        alert("Please Select A Mode First!");
+        // Si el usuario no selecciona un modo, aparece una alerta y la función se detiene.
+        alert("¡Por favor, selecciona un modo primero!");
         panel.classList.add("reveal");
         return;
     }
-    // If not, the computer Speed gets the value of mode.
-    compSpeed = mode.value;
-    // Game starts.
+    // Si no, la velocidad de la computadora obtiene el valor del modo.
+    velodidadInicial = mode.value;
+    // El juego comienza.
     game();
 });
 
-// While resizing,
+// Durante el redimensionamiento,
 window.addEventListener("resize", () => {
-    Resize();
+    redimensionar();
 });
 
-function Resize() {
-    // The minimum window's width should be 620. If not, alert comes.
+function redimensionar() {
+    // El ancho mínimo de la ventana debe ser de 620. De lo contrario, aparece una alerta.
     if (window.innerWidth <= 620) {
-        alert("Please Rotate Your Device.");
+        alert("¡Gira tu dispositivo, por favor!");
         canvas.height = window.innerHeight;
         canvas.width = window.innerWidth;
     } else {
-        // Or the canvas width and height resets.
+        // O el ancho y alto del lienzo se restablecen.
         canvas.width = 600;
         canvas.height = 400;
     }
 }
-// Plays the Resize function once to test if the user's window is perfectly matches.
-Resize();
+// Ejecuta la función de redimensionamiento una vez para comprobar si la ventana del usuario coincide perfectamente.
+redimensionar();
