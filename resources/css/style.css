@@ -89,7 +89,7 @@ canvas {
 }
 
 .panel span:hover .tooltip {
-    opacity: .6;
+    opacity: 1;
     visibility: visible;
 }
 
