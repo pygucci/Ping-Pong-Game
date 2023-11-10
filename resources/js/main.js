@@ -175,7 +175,7 @@ function resetBall() {
 // Función de fin de juego.
 function gameOver() {
     let stat;
-    let maxScore = 10;
+    let maxScore = 5;
 
     // Estos códigos coinciden con ambos jugadores.
     function commonCodes() {
