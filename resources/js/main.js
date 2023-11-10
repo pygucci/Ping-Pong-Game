@@ -197,7 +197,7 @@ function gameOver() {
 
 // Función para dibujar los elementos en el tablero.
 function draw() {
-    drawRect(0, 0, canvas.width, canvas.height, "#089c29");
+    drawRect(0, 0, canvas.width, canvas.height, "black");
     drawRect(user.x, user.y, user.width, user.height, user.color);
     drawRect(
         computer.x,
@@ -261,15 +261,14 @@ function game() {
         // Luego conviértelo en un número que esté entre 1 y -1.
         collidePoint = collidePoint / (player.height / 2);
 
-        // Luego multiplícalo por 45 grados para obtener un ángulo perfecto entre
-        // 45 y -45 grados.
+        // Luego multiplícalo por 45 grados para obtener un ángulo perfecto entre 45 y -45 grados.
         let angle = (Math.PI / 4) * collidePoint;
         let direction = ball.x + ball.radius < canvas.width / 2 ? 1 : -1;
         ball.velocity.x = direction * Math.cos(angle) * ball.speed;
         ball.velocity.y = Math.sin(angle) * ball.speed;
 
         // Agrega 0.5 a la velocidad de la pelota para hacer el juego más rápido.
-        ball.speed += 0.5;
+        ball.speed += 0.4;
 
         // Explosión de partículas
         if (player === user) {
@@ -324,8 +323,8 @@ function game() {
 // Cuando el jugador presiona el botón "Jugar",
 play.addEventListener("click", () => {
     cancelAnimationFrame(gameId); // Restablece el juego anterior.
-    user.score = 0; // Restablece el puntaje.
-    computer.score = 0; // Restablece el puntaje.
+    user.score = 0; // Restablece la puntuacion.
+    computer.score = 0; // Restablece la puntuacion.
     panel.classList.remove("reveal"); // El panel se muestra para dar un mensaje.
     resetBall(); // Restablece la pelota.
     clearTimeout(timeout); // Se cancela el tiempo de espera de la pelota.
