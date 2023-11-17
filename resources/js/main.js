@@ -31,7 +31,7 @@ canvas.height = 400;
 let user = {
     width: 10,
     height: 100,
-    color: "white",
+    color: "orange",
     x: 10,
     y: (canvas.height - 100) / 2,
     score: 0,
@@ -40,7 +40,7 @@ let user = {
 let computer = {
     width: 10,
     height: 100,
-    color: "white",
+    color: "green",
     x: canvas.width - 20,
     y: (canvas.height - 100) / 2,
     score: 0,
